@@ -46,8 +46,37 @@ class ParallexAnimation extends StatefulWidget {
 }
 
 class _ParallexAnimationState extends State<ParallexAnimation> {
+  final childKey = GlobalKey();
+
+  late Widget childWithKey;
+  double? childBaseWidth;
+
+  @override
+  void initState() {
+    super.initState();
+
+    childWithKey = SizedBox(
+      key: childKey,
+      child: widget.child,
+    );
+    fetchChildWidth();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Stack(
+      children: [
+        childWithKey,
+      ],
+    );
+  }
+
+  void fetchChildWidth() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final RenderBox renderBoxRed =
+          childKey.currentContext?.findRenderObject() as RenderBox;
+      final childSize = renderBoxRed.size;
+      childBaseWidth = childSize.width;
+    });
   }
 }
